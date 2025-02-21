@@ -27,7 +27,12 @@
     (else(fast-expt (double a) (halve b)))))
 
 ;1.19
-
+(define (square a n)
+  (cond ((= n 0) 1)
+        ((= n 1) a)
+        ((even? n) (square (* a a) (/ n 2)))
+        (else (* a (square a (- n 1))))))
+  
 ;欧几里得算法求最大公约数
 (define (gcd a b)
   (if (= b 0)
@@ -37,3 +42,26 @@
 (define (expmod base exp m)
   (cond ((= exp 0) 1)
         ((even? exp) (remainder (square (expmod base (/ exp 2) m)) m))
+        (else (remainder (* base (expmod base (- exp 1) m)) m))))
+;寻找最小因子
+(define (smallest-divisor n)
+  (find-divisor n 2))
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor 2) n)n)
+        ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+
+;;;;;1.22
+(define  (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+(define (report-prime elapsed-time)
+  (display "*****")
+  (display elapsed-time))
