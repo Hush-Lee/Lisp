@@ -1,4 +1,4 @@
-(defun hello-world()
+(Defun hello-world()
   (format t "hello world"))
 
 
@@ -43,3 +43,39 @@
     (with-standard-io-syntax
       (setf *db* (read in)))))
 
+(defun where (&key title artist rating (ripped nil ripped-p))
+  #'(lambda (cd)
+      (and
+       (if title (equal (getf cd :title) title) t)
+       (if artist (equal (getf cd :artist) artist) t)
+       (if rating (equal (getf cd :ratinf) rating) t)
+       (if ripped-p (equal (getf cd :ripped) ripped) t))))
+(defun select (selector-fn)
+  (remove-if-not selector-fn *db*))
+
+(defun update (selector-fn &key title artist rating (ripped nil ripped-p))
+  (setf *db*
+	(mapcar
+	 #'(lambda (row)
+	     (when (funcall selector-fn row)
+	       (if title (setf (getf row :title) title))
+	       (if artist (setf (getf row :artist) artist))
+	       (if rating (setf (getf row :rating) rating))
+	       (if ripped-p (setf (get row :ripped) ripped)))
+	     row) *db*)))
+
+ (defun foo(x)
+	   (format t "Parameter: ~a~%" x)
+	   (let ((x 2))
+	     (format t "Outer LET: ~a~%" x)
+	     (let ((x 3))
+	       (format t "Inner LET: ~a~%" x))
+	     (format t "Outer LET :~a~%" x))
+   (format t "Parameter: ~a~%" x))
+
+;;do循环计算Fibonacci数列
+(defun fib (f)
+ (do ((n 0 (1+ n))
+	      (cur 0 next)
+	      (next 1 (+ cur next)))
+	     ((= f n) cur)))

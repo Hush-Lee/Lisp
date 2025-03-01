@@ -1,4 +1,3 @@
-#lang sicp
 
 (define (f n)
  (cond ((< n 3) n)
@@ -10,10 +9,10 @@
 (define (ff n)
   (fb n 2 1 0));迭代
 
-;(define (* a b)
-;  (if (= b 0)
-;      0
-;      (+ a (* a (- b 1)))))
+(define (* a b)
+  (if (= b 0)
+      0
+      (+ a (* a (- b 1)))))
 ;1.18
 (define (double n)
   (+ n n))
@@ -72,26 +71,3 @@
 (define (report-prime elapsed-time)
   (display "*****")
   (display elapsed-time))
-
-
-(define (sum term a next b)
-  (if (> a b)
-      0
-      (+ (term a)
-         (sum term (next a) next b))))
-(define (inc n) (+ n 1))
-(define (cube x) (* x x x))
-(define (sum-cubes a b)
-  (sum cube a inc b))
-
-(define (integral f a b dx)
-  (define (add-dx x) (+ x dx))
-  (* (sum f (+ a (/ dx 2.0)) add-dx b)
-     dx))
-
-(define (Simpson f a b n)
-  (let ((h (/ (- b a) n)) )
-    (define (next k) ((cond (((= (remainder k 2) 0) (* 2 (f (+ a (* k h)))))
-                           (else (* 4 (f (+ a (* k h)))))))))
-    (* (/ h 3) (+ (f a) (f (+ a (* n h))) (sum f (next (+ k 1)) next n)))))
-    
