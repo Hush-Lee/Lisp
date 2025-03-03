@@ -1,0 +1,63 @@
+;;; ======================
+;;; 1. 类定义（修复访问器）
+;;; ======================
+
+;; 基类 Shape
+(defclass shape ()
+  ((color 
+    :initarg :color        ; 构造参数名
+    :initform :black       ; 默认值
+    :accessor color)))     ; 自动生成 (color obj) 和 (setf (color obj) new-value)
+
+;; 子类 Circle
+(defclass circle (shape)
+  ((radius 
+    :initarg :radius 
+    :type number
+    :accessor radius)))    ; 生成 (radius obj) 和 (setf (radius obj))
+
+;; 子类 Rectangle
+(defclass rectangle (shape)
+  ((width  :initarg :width  :accessor width)   ; 生成 width 和 (setf width)
+   (height :initarg :height :accessor height)))
+
+;;; ======================
+;;; 2. 泛型函数与方法
+;;; ======================
+
+;; 定义面积计算泛型函数
+(defgeneric area (shape)
+  (:documentation "计算图形面积"))
+
+;; 实现 Circle 的面积方法
+(defmethod area ((s circle))
+  (* pi (expt (radius s) 2))) ; 使用 (radius s) 访问成员
+
+;; 实现 Rectangle 的面积方法
+(defmethod area ((r rectangle))
+  (* (width r) (height r)))    ; 使用 (width r) 和 (height r)
+
+;;; ======================
+;;; 3. 创建对象并测试
+;;; ======================
+
+;; 创建实例
+(defvar *my-circle*
+  (make-instance 'circle
+    :radius 5.0
+    :color :red))
+
+(defvar *my-rect*
+  (make-instance 'rectangle
+    :width 4
+    :height 6
+    :color :blue))
+
+;; 访问器测试
+(format t "圆的颜色: ~a, 半径: ~a~%" (color *my-circle*) (radius *my-circle*))
+(format t "矩形的颜色: ~a, 宽度: ~a, 高度: ~a~%" 
+        (color *my-rect*) (width *my-rect*) (height *my-rect*))
+
+;; 计算面积
+(format t "圆面积: ~f~%" (area *my-circle*))   ; 输出 78.539816
+(format t "矩形面积: ~d~%" (area *my-rect*))   ; 输出 24
